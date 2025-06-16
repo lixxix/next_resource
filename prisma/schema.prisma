@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt    @id @default(autoincrement())
+  account   String    @unique(map: "user_account") @db.VarChar(100)
+  name      String    @unique(map: "user_name") @db.VarChar(100)
+  password  String    @default("") @db.VarChar(100)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  posts Posts[]
+
+  @@index([account], map: "user_account_IDX")
+	
+}
+
+model Posts {
+  id        BigInt    @id @default(autoincrement())
+  title     String    @db.VarChar(100)
+  content   String    @db.VarChar(1000)
+  userId    BigInt    @db.BigInt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Articals {
+  id        BigInt    @id @default(autoincrement())
+  title     String    @db.VarChar(100)
+  content   String    @db.VarChar(1000)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
