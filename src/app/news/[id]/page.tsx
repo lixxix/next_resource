@@ -106,8 +106,11 @@ interface NewsDetailPageProps {
   };
 }
 
-export default function NewsDetailPage({ params }: NewsDetailPageProps) {
-  const newsId = parseInt(params.id);
+export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
+  // const newsId = parseInt(params.id);
+  const par = await params;
+
+  const newsId = parseInt(par.id);
   const news = newsDetails[newsId as keyof typeof newsDetails];
 
   if (!news) {
