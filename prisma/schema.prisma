@@ -1,41 +1,26 @@
 generator client {
   provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        BigInt    @id @default(autoincrement())
-  account   String    @unique(map: "user_account") @db.VarChar(100)
-  name      String    @unique(map: "user_name") @db.VarChar(100)
-  password  String    @default("") @db.VarChar(100)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  publishDate DateTime
+  category    String
+  author      String
+  readTime    String
+  summary     String
+  content     String
+  tags        String[]
+  relatedNews Int[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  posts Posts[]
-
-  @@index([account], map: "user_account_IDX")
-	
-}
-
-model Posts {
-  id        BigInt    @id @default(autoincrement())
-  title     String    @db.VarChar(100)
-  content   String    @db.VarChar(1000)
-  userId    BigInt    @db.BigInt
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-
-  user      User      @relation(fields: [userId], references: [id])
-}
-
-model Articals {
-  id        BigInt    @id @default(autoincrement())
-  title     String    @db.VarChar(100)
-  content   String    @db.VarChar(1000)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  @@map("posts")
 }

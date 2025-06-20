@@ -1,6 +1,7 @@
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Calendar, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-
+const prisma = new PrismaClient()
 // 模拟新闻数据
 const newsData = [
   {
@@ -76,20 +77,20 @@ const newsData = [
 ];
 
 // 按月份分组新闻
-function groupNewsByMonth(news: typeof newsData) {
+function groupNewsByMonth(news: PostWithSelectedFields[]) {
   const grouped = news.reduce((acc, item) => {
     const date = new Date(item.publishDate);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const monthName = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
-    
+
     if (!acc[monthKey]) {
       acc[monthKey] = {
         name: monthName,
         items: []
       };
     }
-    
-    acc[monthKey].items.push(item);
+
+    acc[monthKey].items.push(item as any);
     return acc;
   }, {} as Record<string, { name: string; items: typeof newsData }>);
 
@@ -121,12 +122,49 @@ function getCategoryColor(category: string) {
     '量子计算': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
     '操作系统': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
   };
-  
+
   return colors[category] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 }
 
-export default function NewsPage() {
-  const groupedNews = groupNewsByMonth(newsData);
+type PostWithSelectedFields = Prisma.PostGetPayload<{
+  select: {
+    id: true
+    title: true
+    category: true
+    publishDate: true
+    summary: true
+  }
+}>
+async function getPost(): Promise<PostWithSelectedFields[] > {
+  try {
+    const postes = prisma.post.findMany({
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        publishDate: true,
+        summary: true,    
+      },
+      orderBy: {
+        publishDate: 'asc'
+      }
+    });
+
+    return postes
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export default async function NewsPage() {
+
+
+  // const groupedNews = groupNewsByMonth(newsData);
+  const posts = await getPost();
+  const groupedNews = groupNewsByMonth(posts);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
@@ -173,12 +211,12 @@ export default function NewsPage() {
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 line-clamp-2">
                               {news.title}
                             </h3>
-                            
+
                             {/* 新闻摘要 */}
                             <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
                               {news.summary}
                             </p>
-                            
+
                             {/* 发布日期和分类 */}
                             <div className="mt-4 flex items-center justify-between">
                               <div className="flex items-center space-x-4">
@@ -189,7 +227,7 @@ export default function NewsPage() {
                                   {news.category}
                                 </span>
                               </div>
-                              
+
                               <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-200" />
                             </div>
                           </div>
