@@ -146,8 +146,10 @@ async function getPost(): Promise<PostWithSelectedFields[] > {
         summary: true,    
       },
       orderBy: {
-        publishDate: 'asc'
-      }
+        publishDate: 'desc'
+      },
+      skip:0,
+      take: 20
     });
 
     return postes
