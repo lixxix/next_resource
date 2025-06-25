@@ -1,80 +1,8 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { Calendar, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+
 const prisma = new PrismaClient()
-// 模拟新闻数据
-const newsData = [
-  {
-    id: 1,
-    title: "苹果发布全新 MacBook Pro，搭载 M4 芯片",
-    publishDate: "2025-06-15",
-    summary: "苹果公司在WWDC上发布了搭载M4芯片的全新MacBook Pro，性能提升显著...",
-    category: "硬件"
-  },
-  {
-    id: 2,
-    title: "OpenAI 推出 GPT-5，AI 能力再次突破",
-    publishDate: "2025-06-12",
-    summary: "OpenAI正式发布GPT-5模型，在推理和创造性任务上表现出色...",
-    category: "人工智能"
-  },
-  {
-    id: 3,
-    title: "特斯拉 FSD 完全自动驾驶功能正式上线",
-    publishDate: "2025-06-08",
-    summary: "特斯拉宣布其完全自动驾驶功能正式向所有车主开放...",
-    category: "自动驾驶"
-  },
-  {
-    id: 4,
-    title: "微软 Azure 推出新一代云计算服务",
-    publishDate: "2025-05-28",
-    summary: "微软Azure发布了新的云计算基础设施，性能和安全性大幅提升...",
-    category: "云计算"
-  },
-  {
-    id: 5,
-    title: "谷歌 Pixel 9 系列正式发布",
-    publishDate: "2025-05-20",
-    summary: "谷歌发布了Pixel 9系列智能手机，搭载最新的Tensor G4芯片...",
-    category: "移动设备"
-  },
-  {
-    id: 6,
-    title: "Meta 发布新一代 VR 头显 Quest 4",
-    publishDate: "2025-05-15",
-    summary: "Meta推出Quest 4 VR头显，带来更高分辨率和更轻的重量...",
-    category: "虚拟现实"
-  },
-  {
-    id: 7,
-    title: "英伟达发布 RTX 5090 显卡",
-    publishDate: "2025-04-25",
-    summary: "英伟达正式发布RTX 5090显卡，AI性能和游戏性能都有大幅提升...",
-    category: "硬件"
-  },
-  {
-    id: 8,
-    title: "SpaceX 星际飞船成功登陆火星",
-    publishDate: "2025-04-18",
-    summary: "SpaceX的星际飞船首次成功登陆火星，标志着人类太空探索新纪元...",
-    category: "航天科技"
-  },
-  {
-    id: 9,
-    title: "量子计算机首次实现商业化应用",
-    publishDate: "2025-04-10",
-    summary: "IBM的量子计算机在金融风险分析领域实现首次商业化应用...",
-    category: "量子计算"
-  },
-  {
-    id: 10,
-    title: "华为发布鸿蒙 OS 5.0",
-    publishDate: "2025-03-22",
-    summary: "华为正式发布鸿蒙OS 5.0，进一步完善生态系统建设...",
-    category: "操作系统"
-  }
-];
 
 // 按月份分组新闻
 function groupNewsByMonth(news: PostWithSelectedFields[]) {
@@ -92,7 +20,7 @@ function groupNewsByMonth(news: PostWithSelectedFields[]) {
 
     acc[monthKey].items.push(item as any);
     return acc;
-  }, {} as Record<string, { name: string; items: typeof newsData }>);
+  }, {} as Record<string, { name: string; items: PostWithSelectedFields[] }>);
 
   // 按月份排序（最新的在前）
   return Object.entries(grouped)
@@ -135,24 +63,46 @@ type PostWithSelectedFields = Prisma.PostGetPayload<{
     summary: true
   }
 }>
-async function getPost(): Promise<PostWithSelectedFields[] > {
+
+// 每页显示的文章数量
+const POSTS_PER_PAGE = 10;
+
+async function getPostsWithPagination(page: number = 1): Promise<{
+  posts: PostWithSelectedFields[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+}> {
   try {
-    const postes = prisma.post.findMany({
+    const skip = (page - 1) * POSTS_PER_PAGE;
+
+    // 获取总数
+    const totalCount = await prisma.post.count();
+
+    // 获取分页数据
+    const posts = await prisma.post.findMany({
       select: {
         id: true,
         title: true,
         category: true,
         publishDate: true,
-        summary: true,    
+        summary: true,
       },
       orderBy: {
         publishDate: 'desc'
       },
-      skip:0,
-      take: 20
+      skip,
+      take: POSTS_PER_PAGE
     });
 
-    return postes
+    const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
+
+    return {
+      posts,
+      totalCount,
+      totalPages,
+      currentPage: page
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -161,12 +111,136 @@ async function getPost(): Promise<PostWithSelectedFields[] > {
   }
 }
 
-export default async function NewsPage() {
+// 分页组件
+function Pagination({
+  currentPage,
+  totalPages
+}: {
+  currentPage: number;
+  totalPages: number;
+}) {
+  // 生成页码数组
+  const getPageNumbers = () => {
+    const delta = 2; // 当前页前后显示的页数
+    const pages: (number | string)[] = [];
 
+    // 如果总页数小于等于7，显示所有页码
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // 总是显示第一页
+      pages.push(1);
 
-  // const groupedNews = groupNewsByMonth(newsData);
-  const posts = await getPost();
+      // 如果当前页距离第一页较远，添加省略号
+      if (currentPage - delta > 2) {
+        pages.push('...');
+      }
+
+      // 添加当前页周围的页码
+      const start = Math.max(2, currentPage - delta);
+      const end = Math.min(totalPages - 1, currentPage + delta);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      // 如果当前页距离最后一页较远，添加省略号
+      if (currentPage + delta < totalPages - 1) {
+        pages.push('...');
+      }
+
+      // 总是显示最后一页
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = getPageNumbers();
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  return (
+    <nav className="flex items-center justify-center space-x-2 mt-8">
+      {/* 上一页按钮 */}
+      <Link
+        href={`?page=${currentPage - 1}`}
+        className={`flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${currentPage === 1
+          ? 'cursor-not-allowed opacity-50'
+          : 'hover:text-gray-700 dark:hover:text-gray-200'
+          }`}
+        onClick={currentPage === 1 ? (e) => e.preventDefault() : undefined}
+      >
+        <ChevronLeft className="h-4 w-4 mr-1" />
+        上一页
+      </Link>
+
+      {/* 页码 */}
+      <div className="flex space-x-1">
+        {pageNumbers.map((page, index) => {
+          if (page === '...') {
+            return (
+              <span
+                key={`ellipsis-${index}`}
+                className="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400"
+              >
+                ...
+              </span>
+            );
+          }
+
+          const pageNum = page as number;
+          const isCurrentPage = pageNum === currentPage;
+
+          return (
+            <Link
+              key={pageNum}
+              href={`?page=${pageNum}`}
+              className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${isCurrentPage
+                ? 'bg-blue-600 text-white border border-blue-600'
+                : 'text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+            >
+              {pageNum}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 下一页按钮 */}
+      <Link
+        href={`?page=${currentPage + 1}`}
+        className={`flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${currentPage === totalPages
+          ? 'cursor-not-allowed opacity-50'
+          : 'hover:text-gray-700 dark:hover:text-gray-200'
+          }`}
+        onClick={currentPage === totalPages ? (e) => e.preventDefault() : undefined}
+      >
+        下一页
+        <ChevronRight className="h-4 w-4 ml-1" />
+      </Link>
+    </nav>
+  );
+}
+
+interface NewsPageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+export default async function NewsPage({ searchParams }: NewsPageProps) {
+  const params = await searchParams;
+  const currentPage = parseInt(params.page || '1', 10);
+  const { posts, totalCount, totalPages } = await getPostsWithPagination(currentPage);
   const groupedNews = groupNewsByMonth(posts);
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
@@ -179,6 +253,9 @@ export default async function NewsPage() {
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               最新的科技资讯和行业动态
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              共 {totalCount} 篇文章，第 {currentPage} 页，共 {totalPages} 页
             </p>
           </div>
 
@@ -200,7 +277,7 @@ export default async function NewsPage() {
 
                 {/* 该月份的新闻列表 */}
                 <div className="grid gap-4">
-                  {monthGroup.items.map((news) => (
+                  {monthGroup.items.map((news: any) => (
                     <Link
                       key={news.id}
                       href={`/news/${news.id}`}
@@ -241,6 +318,9 @@ export default async function NewsPage() {
               </div>
             ))}
           </div>
+
+          {/* 分页组件 */}
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
 
           {/* 空状态 */}
           {groupedNews.length === 0 && (
