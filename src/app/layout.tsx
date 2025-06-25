@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import type { Metadata } from "next";
 import "./globals.css";
 
+
 export const metadata: Metadata = {
   title: "科技新闻",
   description: "分享科技新鲜事",

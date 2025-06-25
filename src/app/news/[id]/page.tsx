@@ -2,6 +2,7 @@ import { Post, PrismaClient } from '@prisma/client';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import "../../sspai-ui.css";
 
 const prisma = new PrismaClient()
 

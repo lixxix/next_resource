@@ -1,0 +1,113 @@
+/* 容器样式 */
+.update-wrap {
+  /* 通常用作包裹层，此处无内容 */
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+
+.content {
+  /* 基础内容容器 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.wangEditor-txt {
+  /* 富文本编辑器核心样式 */
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.minHeight {
+  /* 最小高度保障 */
+  min-height: 300px;
+}
+
+/* 排版元素 */
+h2 {
+  font-size: 1.5em;
+  margin: 1.8em 0 0.8em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eee;
+}
+
+p {
+  margin: 1em 0;
+  text-align: justify;
+}
+
+hr {
+  height: 1px;
+  border: 0;
+  background-color: #eaeaea;
+  margin: 2em 0;
+}
+
+ul {
+  padding-left: 1.8em;
+  margin: 1.2em 0;
+}
+
+li {
+  margin-bottom: 0.6em;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* 特殊元素 */
+.ss-atUser {
+  /* 用户提及样式 */
+  color: #1e80ff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.ss-atUser:hover {
+  background-color: rgba(30, 128, 255, 0.08);
+  text-decoration: underline;
+}
+
+.ss-img-wrapper {
+    position: relative;
+    text-align: center;
+    outline: none;
+    margin: 40px auto;
+    max-width: 100%;
+}
+
+.ss-imgRows {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2x;
+    /* background-color: #f9f9f9; */
+}
+
+.ss-img-wrapper {
+    width: 100%;
+    height: auto;
+}
+
+.ss-imgRows .ss-img-row-item {
+    flex: 1;
+    padding: 5px;
+    text-align: center
+}
+
+.ss-imgRows .ss-img-row-item img {
+    display: block;
+    width: 100%
+}
+
+.ss-imgRows figcaption {
+    flex: 100%
+}
