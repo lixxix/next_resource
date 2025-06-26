@@ -1,5 +1,6 @@
 import { Post, PrismaClient } from '@prisma/client';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Tag } from 'lucide-react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import "../../sspai-ui.css";
@@ -101,6 +102,44 @@ interface NewsDetailPageProps {
   params: Promise<{
     id: string;
   }>;
+}
+
+// 生成动态 metadata
+export async function generateMetadata({ params }: NewsDetailPageProps): Promise<Metadata> {
+  const par = await params;
+  const ret = await getPostWithNavigation(par.id);
+  
+  if (!ret || !ret.post) {
+    return {
+      title: '文章未找到',
+      description: '您访问的文章不存在或已被删除'
+    };
+  }
+
+  const { post } = ret;
+  
+  return {
+    title: `${post.title} - 科技新闻`,
+    description: post.summary,
+    keywords: [post.category, '科技', '新闻', '资讯'].join(', '),
+    authors: post.author ? [{ name: post.author }] : undefined,
+    openGraph: {
+      title: post.title,
+      description: post.summary,
+      type: 'article',
+      publishedTime: post.publishDate.toISOString(),
+      authors: post.author ? [post.author] : undefined,
+      section: post.category,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.summary,
+    },
+    alternates: {
+      canonical: `/news/${post.id}`
+    }
+  };
 }
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
@@ -272,5 +311,4 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         </div>
       </article>
     </div>
-  );
-}
+  )}
