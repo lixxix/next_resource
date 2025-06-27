@@ -119,7 +119,7 @@ export async function generateMetadata({ params }: NewsDetailPageProps): Promise
   const { post } = ret;
   
   return {
-    title: `${post.title} - 科技新闻`,
+    title: `${post.title} - 科技游戏新闻赏`,
     description: post.summary,
     keywords: [post.category, '科技', '新闻', '资讯'].join(', '),
     authors: post.author ? [{ name: post.author }] : undefined,

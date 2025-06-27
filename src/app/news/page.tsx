@@ -256,7 +256,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           {/* 页面标题 */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              科技新闻
+              科技游戏新闻赏
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               最新的科技资讯和行业动态
