@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, Moon, Sun, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -71,12 +71,12 @@ export default function Navigation() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-bold text-gray-900 dark:text-white">
-              Next Resource
+              科技游戏新闻赏
             </Link>
           </div>
 
           {/* 导航菜单 */}
-          <div className="hidden md:block">
+          {/* <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               <Link
                 href="/news"
@@ -97,11 +97,9 @@ export default function Navigation() {
                 关于
               </Link>
             </div>
-          </div>
-
-          {/* 右侧功能区 */}
+          </div> */}
+{/* 
           <div className="flex items-center space-x-4">
-            {/* 主题切换按钮 */}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
@@ -110,7 +108,7 @@ export default function Navigation() {
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
 
-            {/* 用户区域 */}
+            用户区域
             {user ? (
               <div className="relative">
                 <button
@@ -132,8 +130,6 @@ export default function Navigation() {
                     {user.name}
                   </span>
                 </button>
-
-                {/* 用户下拉菜单 */}
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                     <div className="py-1">
@@ -175,8 +171,6 @@ export default function Navigation() {
               </button>
             )}
           </div>
-
-          {/* 移动端菜单按钮 */}
           <div className="md:hidden">
             <button
               className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
@@ -186,7 +180,7 @@ export default function Navigation() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 

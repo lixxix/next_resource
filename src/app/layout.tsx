@@ -4,7 +4,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "科技新闻",
+  title: "科技游戏新闻赏",
   description: "分享科技新鲜事",
 };
 
