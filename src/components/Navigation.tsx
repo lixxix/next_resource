@@ -20,7 +20,8 @@ export default function Navigation() {
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    // const shouldBeDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    const shouldBeDark = false;
     setIsDark(shouldBeDark);
     
     // 确保在 document.body 上添加/移除 dark 类
