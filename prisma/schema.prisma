@@ -23,3 +23,22 @@ model Post {
   @@index([publishDate(sort: Desc)], map: "posts_publishdate_idx")
   @@map("posts")
 }
+
+model Game {
+  id          Int      @id @default(autoincrement())
+  origin      String   @unique(map: "games_unique") @db.VarChar(1024)
+  gameName    String   
+  version     String
+  publishDate DateTime
+  developer   String
+  gameType    String[]
+  description String
+  torrentUrl  String
+  screenShots String[]
+  vedioUrl    String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  @@index([publishDate(sort: Desc)], map: "games_publishdate_idx")
+  @@map("games")
+}
