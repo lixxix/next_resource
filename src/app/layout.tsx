@@ -1,4 +1,6 @@
+import FirebaseAnalyticsProvider from "@/components/FirebaseAnalyticsProvider";
 import Navigation from "@/components/Navigation";
+import { PageviewTracker } from "@/components/PageviewTracker";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -19,7 +21,10 @@ export default function RootLayout({
         className={`bg-white text-black dark:bg-gray-800 dark:text-gray-200`}
       >
         <Navigation />
-        {children}
+        <FirebaseAnalyticsProvider>
+          {children}
+          <PageviewTracker />
+        </FirebaseAnalyticsProvider>
       </body>
     </html>
   );
