@@ -2,8 +2,8 @@ import FirebaseAnalyticsProvider from "@/components/FirebaseAnalyticsProvider";
 import Navigation from "@/components/Navigation";
 import { PageviewTracker } from "@/components/PageviewTracker";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
-
 
 export const metadata: Metadata = {
   title: "科技游戏新闻赏",
@@ -23,7 +23,9 @@ export default function RootLayout({
         <Navigation />
         <FirebaseAnalyticsProvider>
           {children}
-          <PageviewTracker />
+          <Suspense fallback={null}>
+            <PageviewTracker />
+          </Suspense>
         </FirebaseAnalyticsProvider>
       </body>
     </html>
