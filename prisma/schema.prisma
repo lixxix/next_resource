@@ -19,6 +19,7 @@ model Post {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   origin      String?  @unique(map: "posts_unique") @db.VarChar(1024)
+  htmlname    String?  @unique(map: "posts_unique_1") @db.VarChar(1024)
 
   @@index([publishDate(sort: Desc)], map: "posts_publishdate_idx")
   @@map("posts")

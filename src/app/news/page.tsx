@@ -62,6 +62,7 @@ type PostWithSelectedFields = Prisma.PostGetPayload<{
     category: true
     publishDate: true
     summary: true
+    htmlname: true
   }
 }>
 
@@ -88,6 +89,7 @@ async function getPostsWithPagination(page: number = 1): Promise<{
         category: true,
         publishDate: true,
         summary: true,
+        htmlname: true,
       },
       orderBy: {
         publishDate: 'desc'
@@ -287,7 +289,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   {monthGroup.items.map((news: any) => (
                     <Link
                       key={news.id}
-                      href={`/news/${news.id}`}
+                      href={`/news/${news.htmlname}`}
                       className="group block"
                     >
                       <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:hover:shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600">
