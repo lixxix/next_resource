@@ -67,7 +67,7 @@ type PostWithSelectedFields = Prisma.PostGetPayload<{
 }>
 
 // 每页显示的文章数量
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 20;
 
 async function getPostsWithPagination(page: number = 1): Promise<{
   posts: PostWithSelectedFields[];
@@ -285,39 +285,29 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                 </div>
 
                 {/* 该月份的新闻列表 */}
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   {monthGroup.items.map((news: any) => (
                     <Link
                       key={news.id}
                       href={`/news/${news.htmlname}`}
                       className="group block"
                     >
-                      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:hover:shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1 min-w-0">
-                            {/* 新闻标题 */}
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 line-clamp-2">
-                              {news.title}
-                            </h3>
+                      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:hover:shadow-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600">
+                        <div className="flex items-center justify-between">
+                          {/* 左侧：新闻标题 */}
+                          <h3 className="flex-1 text-base font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 line-clamp-1 pr-4">
+                            {news.title}
+                          </h3>
 
-                            {/* 新闻摘要 */}
-                            <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
-                              {news.summary}
-                            </p>
-
-                            {/* 发布日期和分类 */}
-                            <div className="mt-4 flex items-center justify-between">
-                              <div className="flex items-center space-x-4">
-                                <time className="text-sm text-gray-500 dark:text-gray-400">
-                                  {formatDate(news.publishDate)}
-                                </time>
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(news.category)}`}>
-                                  {news.category}
-                                </span>
-                              </div>
-
-                              <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-200" />
-                            </div>
+                          {/* 右侧：日期和分类 */}
+                          <div className="flex items-center space-x-4 flex-shrink-0">
+                            <time className="text-sm text-gray-500 dark:text-gray-400 hidden md:block">
+                              {formatDate(news.publishDate)}
+                            </time>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(news.category)}`}>
+                              {news.category}
+                            </span>
+                            <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-200" />
                           </div>
                         </div>
                       </article>

@@ -228,11 +228,11 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
             </div>
 
             {/* 摘要 */}
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            {/* <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
               <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 {news.summary}
               </p>
-            </div>
+            </div> */}
           </header>
 
           {/* 文章内容 */}
