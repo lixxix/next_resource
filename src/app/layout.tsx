@@ -27,6 +27,15 @@ export default function RootLayout({
             <PageviewTracker />
           </Suspense>
         </FirebaseAnalyticsProvider>
+        <a
+          href="https://www.wanjiazhan.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-10 right-10 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+          aria-label="游戏"
+        >
+          <span className="text-2xl">🎮</span>
+        </a>
       </body>
     </html>
   );
